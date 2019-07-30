@@ -2,6 +2,12 @@
 
 import * as React from "react";
 import "@testing-library/jest-dom/extend-expect";
+
+// В самом пакете нет функций-селекторов getAllByText, getByLabelText, findAllByText, queryByText
+// Вот что есть в самой библиотеке https://github.com/testing-library/react-testing-library/blob/929748f092013b4045f65866edea5df9680f1f3a/src/index.js#L147
+// И кое-что наследуется из dom-testing-library: https://github.com/testing-library/dom-testing-library/blob/d719edd658ce6ad616f2632f378b3a7f4bf03897/src/index.js#L2
+//
+// Функции селекторы есть только после вызова `render`
 import { render, fireEvent, cleanup, within, getAllByText, getByLabelText, findAllByText, queryByText } from "@testing-library/react";
 
 import Shop from "./Shop";
@@ -138,6 +144,12 @@ test("Расчет стоимости трех разных товаров в к
 
 test("Расчет стоимости трех разных товаров и доставки в корзине", async () => {
 
+  // в функцию передано два реакт-элемента, но он принимает только один
+  // Второй аргумент может быть только объектом с настройками:
+  // https://testing-library.com/docs/react-testing-library/api#render
+  //
+  // Тут не надо в тесте передавать <Cart />, потому что он уже содержится
+  // внутри <Shop />
   const { getByTestId, getByText} = render(<Shop />, <Cart />);
 
   const firstItemNode = getByText("Ле Кис-Кис").parentNode;
